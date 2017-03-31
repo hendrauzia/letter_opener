@@ -44,6 +44,20 @@ Alternatively, if you are using ActionMailer directly (without Rails) you will n
   ActionMailer::Base.delivery_method = :letter_opener
 
 
+== Render Only
+
+There are cases when you don't need to open the rendered mail automatically using launchy, instead you may want to investigate the content of the rendered mail using other methods like capybara or other form of automation. You can do this by add the following configuration:
+
+    LetterOpener::DeliveryMethod.render_only = true
+
+And you can retrieve the escaped url of the last rendered email using the following method:
+
+    LetterOpener::DeliveryMethod.last_rendered_mail_url
+
+If you wish to have the original path of the rendered mail, you can access it using the following method:
+
+    LetterOpener::DeliveryMethod.last_rendered_mail_path
+
 == Remote Alternatives
 
 Letter Opener uses {Launchy}[https://github.com/copiousfreetime/launchy] to open sent mail in the browser. This assumes the Ruby process is running on the local development machine. If you are using a separate staging server or VM this will not work. In that case consider using {Mailtrap}[http://mailtrap.io/] or {MailCatcher}[http://mailcatcher.me/].
@@ -56,3 +70,4 @@ In order to keep this project simple, I don't have plans to turn it into a Rails
 Questions or problems? Please use the {issue tracker}[https://github.com/ryanb/letter_opener/issues]. If you would like to contribute to this project, fork this repository and run +bundle+ and +rake+ to run the tests. Pull requests appreciated.
 
 Special thanks to the {mail_view}[https://github.com/37signals/mail_view/] gem for inspiring this project and for their mail template. Also thanks to {Vasiliy Ermolovich}[https://github.com/nashby] for helping manage this project.
+

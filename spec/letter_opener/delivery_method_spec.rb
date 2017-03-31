@@ -328,4 +328,46 @@ describe LetterOpener::DeliveryMethod do
       }.to raise_exception(ArgumentError)
     end
   end
+
+  it 'does not open if render_only is set to true' do
+    LetterOpener::DeliveryMethod.render_only = true
+
+    expect(Launchy).not_to receive(:open)
+
+    Mail.deliver do
+      from     'Foo foo@example.com'
+      reply_to 'No Reply no-reply@example.com'
+      to       'Bar bar@example.com'
+      body     'World! http://example.com'
+    end
+
+    LetterOpener::DeliveryMethod.render_only = false
+  end
+
+  it 'opens the mail if render_only is set to false' do
+    expect(Launchy).to receive(:open)
+
+    Mail.deliver do
+      from     'Foo foo@example.com'
+      reply_to 'No Reply no-reply@example.com'
+      to       'Bar bar@example.com'
+      body     'World! http://example.com'
+    end
+  end
+
+  it 'sets the last rendered mail url' do
+    allow_any_instance_of(LetterOpener::Message).to receive(:filepath).and_return("first-rendered-mail-path", "last-rendered-mail path")
+
+    2.times {
+      Mail.deliver do
+        from     'Foo foo@example.com'
+        reply_to 'No Reply no-reply@example.com'
+        to       'Bar bar@example.com'
+        body     'World! http://example.com'
+      end
+    }
+
+    expect(LetterOpener::DeliveryMethod.last_rendered_mail_path).to eq 'last-rendered-mail path'
+    expect(LetterOpener::DeliveryMethod.last_rendered_mail_url).to eq 'last-rendered-mail%20path'
+  end
 end
