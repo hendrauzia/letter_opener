@@ -358,6 +358,8 @@ describe LetterOpener::DeliveryMethod do
   it 'sets the last rendered mail url' do
     allow_any_instance_of(LetterOpener::Message).to receive(:filepath).and_return("first-rendered-mail-path", "last-rendered-mail path")
 
+    expect{LetterOpener::DeliveryMethod.last_rendered_mail_url}.not_to raise_error
+
     2.times {
       Mail.deliver do
         from     'Foo foo@example.com'
@@ -367,7 +369,7 @@ describe LetterOpener::DeliveryMethod do
       end
     }
 
-    expect(LetterOpener::DeliveryMethod.last_rendered_mail_path).to eq 'last-rendered-mail path'
     expect(LetterOpener::DeliveryMethod.last_rendered_mail_url).to eq 'last-rendered-mail%20path'
+    expect(LetterOpener::DeliveryMethod.last_rendered_mail_path).to eq 'last-rendered-mail path'
   end
 end

@@ -10,6 +10,8 @@ module LetterOpener
   class DeliveryMethod
     include Mail::CheckDeliveryParams if defined?(Mail::CheckDeliveryParams)
 
+    @@last_rendered_mail_path = ""
+
     class InvalidOption < StandardError; end
 
     attr_accessor :settings
